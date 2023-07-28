@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>功德禅首页</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+
+
+</head>
+
+<body>
+
+  <script type="module">
+
+   import * as THREE from '../../../../three.js-r130/build/three.module.js';
+    // 引入gltf模型加载库GLTFLoader.js
+    import { GLTFLoader } from '../../../../three.js-r130/examples/jsm/loaders/GLTFLoader.js';
+    // 引入Three.js扩展库OrbitControls.js：旋转缩放功能
+    import { OrbitControls } from '../../../../three.js-r130/examples/jsm/controls/OrbitControls.js';
+
+    //新建 three js资源场景
+    const scene = new THREE.Scene();
+
+    //创建一个摄像机
+    const camera = new THREE.PerspectiveCamera( 15, 750 / 750, 0.1, 2000 );
+
+    //相机位置
+    camera.position.set(390,260,380);
+
+    //添加平行光
+    const directionalLight = new THREE.DirectionalLight( 0xffffff, 1.8 );//声明一个平行光
+    scene.add( directionalLight );//加载平行光到场景
+    directionalLight.position.set(5,10,7.5);//平行光的位置
+    directionalLight.castShadow = true;//平行光投射阴影
+
+    const light = new THREE.AmbientLight( 0x404040,1); // 柔和的白光
+    scene.add( light );
+
+
+    //创建three js渲染器
+    const renderer = new THREE.WebGLRenderer({
+      antialias : true,
+      alpha: true
+    });
+
+    //渲染阴影贴图
+    renderer.shadowMap.enabled = true;
+
+    //设置渲染窗口大小
+    // renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setSize( 750, 750 );
+
+    // 设置背景颜色
+renderer.setClearColor(0x000000,0)
+// 黑色
+renderer.setClearColor(0x000000)
+
+    // //修改场景背景颜色
+    // scene.background = new THREE.Color(0xffffcc99)
+
+//     // onresize 事件会在窗口被调整大小时发生
+// window.onresize=function(){
+//   // 重置渲染器输出画布canvas尺寸
+//   renderer.setSize(window.innerWidth,window.innerHeight);
+//   // 全屏情况下：设置观察范围长宽比aspect为窗口宽高比
+//   camera.aspect = window.innerWidth/window.innerHeight;
+//   // 渲染器执行render方法的时候会读取相机对象的投影矩阵属性projectionMatrix
+//   // 但是不会每渲染一帧，就通过相机的属性计算投影矩阵(节约计算资源)
+//   // 如果相机的一些属性发生了变化，需要执行updateProjectionMatrix ()方法更新相机的投影矩阵
+//   camera.updateProjectionMatrix ();
+// };
+
+    //将渲染参数添加到框架
+    document.body.appendChild( renderer.domElement );
+
+    //设置相机可以操作的权限
+    var controls = new OrbitControls(camera, renderer.domElement);
+    //控制器惯性打开
+    controls.enableDamping = true;
+    //交互控制
+    controls.maxAzimuthAngle = 0.4*Math.PI;
+    controls.minAzimuthAngle = 0;
+    controls.maxPolarAngle = 0.45*Math.PI;
+    controls.minPolarAngle = 0.25*Math.PI;
+    controls.maxDistance = 650;
+    controls.minDistance = 300;
+
+    //实时刷新我们的渲染结果
+    function animate() {
+        requestAnimationFrame( animate );
+        controls.update();//重置控制器
+        renderer.render( scene, camera );
+    }
+    animate();
+
+    //模型部分
+
+// Instantiate a loader
+const loader = new GLTFLoader();
+
+loader.load(
+	// resource URL
+	'./shouye1.gltf',
+	// called when the resource is loaded
+	function ( gltf ) {
+
+		scene.add( gltf.scene );
+
+	},
+	// called while loading is progressing
+	function ( xhr ) {
+
+		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+	},
+
+);
+
+    //模型结束
+
+
+  </script>
+</body>
+
+</html>
+
